@@ -49,7 +49,7 @@ test("load locations", () => {
 	expect(location4?.name).toBe("Southgate Mall");
 });
 
-test("validate", () => {
+test("validate locations", () => {
 	expect(() => {
 		loadLocations({
 			southgate: {

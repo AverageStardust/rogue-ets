@@ -1,12 +1,12 @@
 {
 	"lines": {
 		"capital": {
-			"vehicle": "train",
-			"vehicleNaming": {
+			"vehicleType": {
+				"mode": "train",
+				"bidirectional": true,
 				"prefix": "",
 				"checkpoints": {}
 			},
-			"bidirectional": true,
 			"stops": [
 				"centuryPark",
 				10,
@@ -40,12 +40,12 @@
 			]
 		},
 		"metro": {
-			"vehicle": "train",
-			"vehicleNaming": {
+			"vehicleType": {
+				"mode": "train",
+				"bidirectional": true,
 				"prefix": "",
 				"checkpoints": {}
 			},
-			"bidirectional": true,
 			"stops": [
 				"healthSciences",
 				3,
@@ -69,14 +69,14 @@
 			]
 		},
 		"valley": {
-			"vehicle": "train",
-			"vehicleNaming": {
+			"vehicleType": {
+				"mode": "train",
+				"bidirectional": true,
 				"prefix": "",
 				"checkpoints": {}
 			},
-			"bidirectional": true,
 			"stops": [
-				"102st",
+				"102st102ave",
 				3,
 				"churchill",
 				3,
@@ -137,15 +137,15 @@
 		},
 		"bayEnterprise": {
 			"name": "Bay/Enterprise Square Station",
-			"paths": ["corona", "central", "102st"]
+			"paths": ["corona", "central", "102st102ave"]
 		},
 		"central": {
 			"name": "Central Station",
-			"paths": ["bayEnterprise", "churchill", "102st"]
+			"paths": ["bayEnterprise", "churchill", "102st102ave"]
 		},
 		"churchill": {
 			"name": "Churchill Station",
-			"paths": ["central", "102st", "quarters"]
+			"paths": ["central", "102st102ave", "quarters"]
 		},
 		"stadium": {
 			"name": "Stadium Station",
@@ -175,7 +175,7 @@
 			"name": "NAIT/Blanchford Market Station",
 			"paths": []
 		},
-		"102st": {
+		"102st102ave": {
 			"name": "102 Street Station",
 			"paths": ["churchill", "bayEnterprise", "central"]
 		},
