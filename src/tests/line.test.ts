@@ -1,4 +1,5 @@
 import { Line } from "../line";
+import { LoadError } from "../load";
 
 test("load lines", () => {
 	const line1 = Line.load({
@@ -8,7 +9,6 @@ test("load lines", () => {
 			prefix: "",
 			checkpoints: {},
 		},
-		bidirectional: true,
 		stops: [
 			"centuryPark",
 			10,
@@ -35,7 +35,6 @@ test("load lines", () => {
 			prefix: "",
 			checkpoints: {},
 		},
-		bidirectional: false,
 		stops: ["university", 6, "110st82ave", 7, "104st82ave"],
 	});
 
@@ -43,4 +42,40 @@ test("load lines", () => {
 	expect(line2.trips).toEqual([6, 7]);
 });
 
-test("validate lines", () => {});
+test("validate lines", () => {
+	expect(() => {
+		Line.load({
+			vehicleType: {
+				mode: "train",
+				isBidirectional: true,
+				prefix: "",
+				checkpoints: {},
+			},
+			stops: ["centuryPark", 10, "southgate", 6, "southCampus", 4],
+		});
+	}).toThrow(LoadError);
+
+	expect(() => {
+		Line.load({
+			vehicleType: {
+				mode: "train",
+				isBidirectional: true,
+				prefix: "",
+				checkpoints: {},
+			},
+			stops: [7, "centuryPark", 10, "southgate", 6, "southCampus"],
+		});
+	}).toThrow(LoadError);
+
+	expect(() => {
+		Line.load({
+			vehicleType: {
+				mode: "train",
+				isBidirectional: true,
+				prefix: "",
+				checkpoints: {},
+			},
+			stops: [],
+		});
+	}).toThrow(LoadError);
+});
