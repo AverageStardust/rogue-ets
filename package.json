@@ -1,0 +1,21 @@
+{
+	"name": "rouge-ets",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"moduleResolution": "NodeNext",
+	"devDependencies": {
+		"@types/jest": "^30.0.0",
+		"identity-obj-proxy": "^3.0.0",
+		"jest": "^30.4.2",
+		"jest-environment-jsdom": "^30.4.1",
+		"ts-jest": "^29.4.9",
+		"vite": "^8.0.11"
+	},
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview",
+		"test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" npx jest"
+	}
+}
