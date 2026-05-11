@@ -1,5 +1,5 @@
 import { HTMLFrontend } from "./frontend.ts";
-import { type Frontend } from "./types.ts";
+import { VerbTag, type Frontend } from "./types.ts";
 import { loadGamedata } from "./load";
 
 const frontend: Frontend = new HTMLFrontend();

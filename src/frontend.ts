@@ -24,15 +24,15 @@ class Verb {
 		this.html.classList.add("btn");
 		this.html.setAttribute("selectableState", "selectable");
 		this.html.textContent = word;
-		this.html.addEventListener("click", this.Clicked.bind(this));
+		this.html.addEventListener("click", this.clicked.bind(this));
 	}
 
-	private GetEnabled(): boolean {
+	private getEnabled(): boolean {
 		return this.softEnabled && this.enabled;
 	}
 
-	private UpdateAttributes() {
-		if (this.GetEnabled()) {
+	private updateAttributes() {
+		if (this.getEnabled()) {
 			if (this.selected) {
 				this.html.setAttribute("selectableState", "selected");
 			} else {
@@ -43,45 +43,45 @@ class Verb {
 		}
 	}
 
-	private Clicked(_event: PointerEvent) {
-		if (this.GetEnabled()) {
+	private clicked(_event: PointerEvent) {
+		if (this.getEnabled()) {
 			this.selected = !this.selected;
 			this.clickHook(this, this.selected);
-			this.UpdateAttributes();
+			this.updateAttributes();
 		}
 	}
 
-	public GetWord(): string {
+	public getWord(): string {
 		return this.word;
 	}
 
-	public AppendTo(parent: HTMLDivElement) {
+	public appendTo(parent: HTMLDivElement) {
 		parent.appendChild(this.html);
 	}
 
-	public Deselect() {
+	public deselect() {
 		this.selected = false;
-		this.UpdateAttributes();
+		this.updateAttributes();
 	}
 
-	public SoftEnable() {
+	public softEnable() {
 		this.softEnabled = true;
-		this.UpdateAttributes();
+		this.updateAttributes();
 	}
 
-	public SoftDisable() {
+	public softDisable() {
 		this.softEnabled = false;
-		this.UpdateAttributes();
+		this.updateAttributes();
 	}
 
-	public Enable() {
+	public enable() {
 		this.enabled = true;
-		this.UpdateAttributes();
+		this.updateAttributes();
 	}
 
-	public Disable() {
+	public disable() {
 		this.enabled = false;
-		this.UpdateAttributes();
+		this.updateAttributes();
 	}
 }
 
@@ -97,10 +97,10 @@ class Noun {
 		this.html = document.createElement("span");
 		this.html.classList.add("btn");
 		this.html.textContent = object.toString();
-		this.html.addEventListener("click", this.Clicked.bind(this));
+		this.html.addEventListener("click", this.clicked.bind(this));
 	}
 
-	private UpdateAttributes() {
+	private updateAttributes() {
 		if (this.selected) {
 			this.html.setAttribute("selectableState", "selected");
 		} else {
@@ -112,39 +112,39 @@ class Noun {
 		}
 	}
 
-	private Clicked(_event: PointerEvent) {
+	private clicked(_event: PointerEvent) {
 		if (this.selectable || this.selected) {
 			this.selected = !this.selected;
 			this.clickHook(this, this.selected);
-			this.UpdateAttributes();
+			this.updateAttributes();
 		}
 	}
 
-	public AppendTo(parent: HTMLDivElement) {
+	public appendTo(parent: HTMLDivElement) {
 		parent.appendChild(this.html);
 	}
 
-	public GetGameObject(): GameObject {
+	public getGameObject(): GameObject {
 		return this.object;
 	}
 
-	public SetSelectable(tag: VerbTag) {
-		this.selectable = this.object.GetTags().has(tag);
-		this.UpdateAttributes();
+	public setSelectable(tag: VerbTag) {
+		this.selectable = this.object.getTags().has(tag);
+		this.updateAttributes();
 	}
 
-	public StopSelection() {
+	public stopSelection() {
 		this.selectable = false;
 		this.selected = false;
-		this.UpdateAttributes();
+		this.updateAttributes();
 	}
 
-	public Deselect() {
+	public deselect() {
 		this.selected = false;
-		this.UpdateAttributes();
+		this.updateAttributes();
 	}
 
-	public Disable() {
+	public disable() {
 		this.selectable = false;
 		this.selected = false;
 		this.html.setAttribute("selectableState", "disabled");
@@ -172,16 +172,16 @@ export class HTMLFrontend implements Frontend {
 		this.verbScreen = document.querySelector("div.verb-screen");
 	}
 
-	private AccessVerb(word: string, accessor: (verb: Verb) => void) {
-		const verb = this.GetVerb(word);
+	private accessVerb(word: string, accessor: (verb: Verb) => void) {
+		const verb = this.getVerb(word);
 		if (verb !== undefined) accessor(verb);
 	}
 
-	private GetVerb(word: string): Verb | undefined {
-		return this.verbs.find((verb) => verb.GetWord() === word);
+	private getVerb(word: string): Verb | undefined {
+		return this.verbs.find((verb) => verb.getWord() === word);
 	}
 
-	private InitSelection(word: string, args: VerbTag[]) {
+	private initSelection(word: string, args: VerbTag[]) {
 		this.verbSelection = {
 			word,
 			args,
@@ -189,10 +189,10 @@ export class HTMLFrontend implements Frontend {
 			idx: 0,
 		};
 
-		this.FinishOrUpdateSelection();
+		this.finishOrUpdateSelection();
 	}
 
-	private NounClickedHook(noun: Noun, selected: boolean) {
+	private nounClickedHook(noun: Noun, selected: boolean) {
 		if (this.verbSelection !== null) {
 			if (selected) {
 				this.verbSelection.currentArgs.push(noun);
@@ -203,59 +203,64 @@ export class HTMLFrontend implements Frontend {
 					this.verbSelection.idx = index;
 					this.verbSelection.currentArgs
 						.slice(index)
-						.forEach((otherNoun) => otherNoun.Deselect());
+						.forEach((otherNoun) => otherNoun.deselect());
 					this.verbSelection.currentArgs.length = index;
 				}
 			}
-			this.FinishOrUpdateSelection();
+			this.finishOrUpdateSelection();
 		}
 	}
 
-	private FinishOrUpdateSelection() {
+	private finishOrUpdateSelection() {
 		if (this.verbSelection !== null) {
 			if (
-				this.verbSelection.currentArgs.length < this.verbSelection.args.length
+				this.verbSelection.currentArgs.length <
+				this.verbSelection.args.length
 			) {
 				// Update
 				for (const noun of this.activeNouns) {
-					noun.SetSelectable(this.verbSelection.args[this.verbSelection.idx]);
+					noun.setSelectable(
+						this.verbSelection.args[this.verbSelection.idx],
+					);
 				}
 			} else {
 				// Finish
 				if (this.verbHook !== null) {
 					this.verbHook(
 						this.verbSelection.word,
-						this.verbSelection.currentArgs.map((noun) => noun.GetGameObject()),
+						this.verbSelection.currentArgs.map((noun) =>
+							noun.getGameObject(),
+						),
 					);
 				}
-				this.ClearSelection();
+				this.clearSelection();
 			}
 		}
 	}
 
-	private ClearSelection() {
+	private clearSelection() {
 		this.verbSelection = null;
 		this.verbs.forEach((verb) => {
-			verb.Deselect();
-			verb.SoftEnable();
+			verb.deselect();
+			verb.softEnable();
 		});
 		for (const noun of this.activeNouns) {
-			noun.StopSelection();
+			noun.stopSelection();
 		}
 	}
 
-	private VerbClickedHook(verb: Verb, selected: boolean) {
+	private verbClickedHook(verb: Verb, selected: boolean) {
 		if (selected) {
 			this.verbs
 				.filter((otherVerb) => otherVerb !== verb)
-				.forEach((otherVerb) => otherVerb.SoftDisable());
-			this.InitSelection(verb.GetWord(), verb.args);
+				.forEach((otherVerb) => otherVerb.softDisable());
+			this.initSelection(verb.getWord(), verb.args);
 		} else {
-			this.ClearSelection();
+			this.clearSelection();
 		}
 	}
 
-	public AppendStory(text: string, objects: GameObject[]): void {
+	public appendStory(text: string, objects: GameObject[]): void {
 		const splitText = text.split("%o");
 		const paragraph = document.createElement("p");
 		paragraph.append(splitText.shift() ?? "");
@@ -283,53 +288,57 @@ export class HTMLFrontend implements Frontend {
 			if (typeof object === "string") {
 				paragraph.append(object, textSeg);
 			} else {
-				const noun = new Noun(object, this.NounClickedHook.bind(this));
-				noun.AppendTo(paragraph);
+				const noun = new Noun(object, this.nounClickedHook.bind(this));
+				noun.appendTo(paragraph);
 				this.activeNouns.push(noun);
 				paragraph.append(textSeg);
 			}
 		}
 	}
 
-	public InvalidateObjects(): void {
+	public invalidateObjects(): void {
 		for (const noun of this.activeNouns) {
-			noun.Disable();
+			noun.disable();
 		}
 		this.activeNouns = [];
 	}
 
-	public RegisterVerb(word: string, args: VerbTag[]) {
-		const verb = this.GetVerb(word);
+	public registerVerb(word: string, args: VerbTag[]) {
+		const verb = this.getVerb(word);
 		if (verb !== undefined) {
 			verb.args = args;
 		} else {
-			const newVerb = new Verb(word, args, this.VerbClickedHook.bind(this));
+			const newVerb = new Verb(
+				word,
+				args,
+				this.verbClickedHook.bind(this),
+			);
 			this.verbs.push(newVerb);
 			if (this.verbScreen !== null) {
-				newVerb.AppendTo(this.verbScreen);
+				newVerb.appendTo(this.verbScreen);
 			}
 		}
 	}
 
-	public EnableVerb(word: string) {
-		this.AccessVerb(word, (verb) => {
-			verb.Enable();
+	public enableVerb(word: string) {
+		this.accessVerb(word, (verb) => {
+			verb.enable();
 		});
 	}
 
-	public DisableVerb(word: string) {
-		this.AccessVerb(word, (verb) => {
-			verb.Disable();
+	public disableVerb(word: string) {
+		this.accessVerb(word, (verb) => {
+			verb.disable();
 		});
 	}
 
-	public RegisterVerbHook(hook: VerbHook): void {
+	public registerVerbHook(hook: VerbHook): void {
 		this.verbHook = hook;
 	}
 
-	public DisplayError(message: string): void {}
+	public displayError(message: string): void {}
 
-	public DisplayMessage(message: string): void {}
+	public displayMessage(message: string): void {}
 
-	public ResetState(): void {}
+	public resetState(): void {}
 }

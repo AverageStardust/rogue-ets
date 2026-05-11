@@ -4,23 +4,23 @@ export enum VerbTag {
 }
 
 export interface GameObject {
-	GetTags(): Set<VerbTag>;
+	getTags(): Set<VerbTag>;
 	toString(): string;
 }
 
 export type VerbHook = (word: string, args: GameObject[]) => void;
 
 export interface Frontend {
-	AppendStory(text: string, objects: GameObject[]): void;
-	InvalidateObjects(): void;
+	appendStory(text: string, objects: GameObject[]): void;
+	invalidateObjects(): void;
 
-	RegisterVerb(word: string, args: VerbTag[]): void;
-	EnableVerb(word: string): void;
-	DisableVerb(word: string): void;
-	RegisterVerbHook(hook: VerbHook): void;
+	registerVerb(word: string, args: VerbTag[]): void;
+	enableVerb(word: string): void;
+	disableVerb(word: string): void;
+	registerVerbHook(hook: VerbHook): void;
 
-	DisplayError(message: string): void;
-	DisplayMessage(message: string): void;
+	displayError(message: string): void;
+	displayMessage(message: string): void;
 
-	ResetState(): void;
+	resetState(): void;
 }
