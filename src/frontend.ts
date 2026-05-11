@@ -270,13 +270,12 @@ export class HTMLFrontend implements Frontend {
 			object: objects.shift() ?? (missingObject++, "%o"),
 		}));
 		if (missingObject > 0) {
-			console.warn(
+			this.displayError(
 				`Appended story segment with ${missingObject} missing objects for interpolation`,
 			);
 		} else if (objects.length > 0) {
-			console.warn(
+			this.displayError(
 				`Appended story segment with ${objects.length} excess objects for interpolation`,
-				objects,
 			);
 		}
 
