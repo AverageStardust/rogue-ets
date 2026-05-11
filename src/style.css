@@ -24,6 +24,8 @@ body {
 	display: flex;
 	flex-direction: column;
 	gap: 16px;
+
+	position: relative;
 }
 
 .app .box {
@@ -68,6 +70,80 @@ body {
 .app .verb-screen .btn {
 	font-size: 20px;
 	justify-self: center;
+}
+
+.app .notification-box-outer {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+
+	pointer-events: none;
+
+	display: flex;
+	justify-content: center;
+}
+
+.app .notification-box-outer .notification-box {
+	width: min(100vw, 500px);
+	height: 100%;
+	padding: 8px;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.app .notification-box-outer .notification-box .notification {
+	--overlay-percent: 0%;
+	--transition-time: 10000ms;
+
+	padding: 8px;
+	left: 0%;
+
+	background-color: black;
+	border: solid white 2px;
+
+	pointer-events: all;
+	-webkit-user-select: none; /* Safari */
+	-ms-user-select: none; /* IE 10 and IE 11 */
+	user-select: none; /* Standard syntax */
+
+	cursor: pointer;
+
+	font-weight: 600;
+	font-size: 16px;
+
+	position: relative;
+}
+
+.app .notification-box-outer .notification-box .notification::after {
+	content: "";
+	background-color: #ffffff2a;
+
+	top: 0;
+	left: 0;
+	bottom: 0;
+
+	width: var(--overlay-percent);
+
+	position: absolute;
+
+	transition: linear var(--transition-time);
+	transition-property: left width opacity;
+}
+
+.app .notification-box-outer .notification-box .notification.error {
+	border-color: #fc6c6c;
+
+	background-color: #330000;
+
+	color: #fcb1b1;
+}
+
+.app .notification-box-outer .notification-box .notification.error::after {
+	background-color: #ff00002a;
 }
 
 .app .btn {
@@ -124,5 +200,9 @@ body {
 	}
 	.app .verb-screen .btn {
 		font-size: 16px;
+	}
+
+	.app .notification-box-outer .notification-box .notification {
+		font-size: 12px;
 	}
 }

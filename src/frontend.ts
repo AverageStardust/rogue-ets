@@ -151,6 +151,50 @@ class Noun {
 	}
 }
 
+class Notification {
+	private html: HTMLDivElement;
+	private static TIMEOUT: number = 10000;
+
+	constructor(
+		message: string,
+		private clickHook: (notification: Notification) => void,
+		error: boolean = false,
+	) {
+		this.html = document.createElement("div");
+		this.html.classList.add("notification");
+		if (error) this.html.classList.add("error");
+		this.html.textContent = message;
+		this.html.addEventListener("click", this.clicked.bind(this));
+		if (!error) {
+			this.html.style.setProperty(
+				"--transition-time",
+				`${Notification.TIMEOUT}ms`,
+			);
+			setTimeout(
+				() => this.html.style.setProperty("--overlay-percent", `100%`),
+				100,
+			);
+
+			setTimeout(this.removeSelf.bind(this), Notification.TIMEOUT);
+		}
+	}
+
+	private clicked(_event: PointerEvent) {
+		this.removeSelf();
+	}
+
+	private removeSelf() {
+		if (this.html.isConnected) {
+			this.html.remove();
+		}
+		this.clickHook(this);
+	}
+
+	public appendTo(parent: HTMLDivElement) {
+		parent.appendChild(this.html);
+	}
+}
+
 interface VerbSelection {
 	word: string;
 	args: VerbTag[];
@@ -162,14 +206,18 @@ export class HTMLFrontend implements Frontend {
 	private storyScreen: HTMLDivElement | null;
 	private activeNouns: Noun[] = [];
 
-	private verbs: Verb[] = [];
 	private verbScreen: HTMLDivElement | null;
+	private verbs: Verb[] = [];
 	private verbSelection: VerbSelection | null = null;
 	private verbHook: VerbHook | null = null;
+
+	private notificationBox: HTMLDivElement | null;
+	private notifications: Notification[] = [];
 
 	constructor() {
 		this.storyScreen = document.querySelector("div.story-screen");
 		this.verbScreen = document.querySelector("div.verb-screen");
+		this.notificationBox = document.querySelector("div.notification-box");
 	}
 
 	private accessVerb(word: string, accessor: (verb: Verb) => void) {
@@ -214,23 +262,18 @@ export class HTMLFrontend implements Frontend {
 	private finishOrUpdateSelection() {
 		if (this.verbSelection !== null) {
 			if (
-				this.verbSelection.currentArgs.length <
-				this.verbSelection.args.length
+				this.verbSelection.currentArgs.length < this.verbSelection.args.length
 			) {
 				// Update
 				for (const noun of this.activeNouns) {
-					noun.setSelectable(
-						this.verbSelection.args[this.verbSelection.idx],
-					);
+					noun.setSelectable(this.verbSelection.args[this.verbSelection.idx]);
 				}
 			} else {
 				// Finish
 				if (this.verbHook !== null) {
 					this.verbHook(
 						this.verbSelection.word,
-						this.verbSelection.currentArgs.map((noun) =>
-							noun.getGameObject(),
-						),
+						this.verbSelection.currentArgs.map((noun) => noun.getGameObject()),
 					);
 				}
 				this.clearSelection();
@@ -258,6 +301,12 @@ export class HTMLFrontend implements Frontend {
 		} else {
 			this.clearSelection();
 		}
+	}
+
+	private removeNotification(notification: Notification) {
+		this.notifications = this.notifications.filter(
+			(notif) => notif != notification,
+		);
 	}
 
 	public appendStory(text: string, objects: GameObject[]): void {
@@ -307,11 +356,7 @@ export class HTMLFrontend implements Frontend {
 		if (verb !== undefined) {
 			verb.args = args;
 		} else {
-			const newVerb = new Verb(
-				word,
-				args,
-				this.verbClickedHook.bind(this),
-			);
+			const newVerb = new Verb(word, args, this.verbClickedHook.bind(this));
 			this.verbs.push(newVerb);
 			if (this.verbScreen !== null) {
 				newVerb.appendTo(this.verbScreen);
@@ -335,9 +380,51 @@ export class HTMLFrontend implements Frontend {
 		this.verbHook = hook;
 	}
 
-	public displayError(message: string): void {}
+	public displayError(message: string): void {
+		const notification = new Notification(
+			message,
+			this.removeNotification.bind(this),
+			true,
+		);
+		this.notifications.push(notification);
+		if (this.notificationBox !== null) {
+			notification.appendTo(this.notificationBox);
+		}
+	}
 
-	public displayMessage(message: string): void {}
+	public displayMessage(message: string): void {
+		const notification = new Notification(
+			message,
+			this.removeNotification.bind(this),
+		);
+		this.notifications.push(notification);
+		if (this.notificationBox !== null) {
+			notification.appendTo(this.notificationBox);
+		}
+	}
 
-	public resetState(): void {}
+	/**
+	 * Resets all state **except** for the verb hook
+	 */
+	public resetState(): void {
+		if (this.storyScreen !== null) {
+			while (this.storyScreen.lastChild) {
+				this.storyScreen.removeChild(this.storyScreen.lastChild);
+			}
+		}
+		if (this.verbScreen !== null) {
+			while (this.verbScreen.lastChild) {
+				this.verbScreen.removeChild(this.verbScreen.lastChild);
+			}
+		}
+		if (this.notificationBox !== null) {
+			while (this.notificationBox.lastChild) {
+				this.notificationBox.removeChild(this.notificationBox.lastChild);
+			}
+		}
+		this.activeNouns = [];
+		this.verbs = [];
+		this.verbSelection = null;
+		this.notifications = [];
+	}
 }
