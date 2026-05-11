@@ -1,0 +1,223 @@
+{
+	"lines": {
+		"capital": {
+			"vehicleType": {
+				"mode": "train",
+				"bidirectional": true,
+				"prefix": "",
+				"checkpoints": {}
+			},
+			"stops": [
+				"centuryPark",
+				[10, "harryAinlaySchool"],
+				"southgate",
+				6,
+				"southCampus",
+				4,
+				"mcKernan",
+				3,
+				"healthSciences",
+				3,
+				"university",
+				[4, "highLevelBridge"],
+				"govermentCentre",
+				3,
+				"corona",
+				3,
+				"bayEnterprise",
+				3,
+				"central",
+				3,
+				"churchill",
+				[7, "ghostStation"],
+				"stadium",
+				6,
+				"coliseum",
+				8,
+				"belvedere",
+				6,
+				"clareview"
+			]
+		},
+		"metro": {
+			"vehicleType": {
+				"mode": "train",
+				"bidirectional": true,
+				"prefix": "",
+				"checkpoints": {}
+			},
+			"stops": [
+				"healthSciences",
+				3,
+				"university",
+				[4, "highLevelBridge"],
+				"govermentCentre",
+				3,
+				"corona",
+				3,
+				"bayEnterprise",
+				3,
+				"central",
+				3,
+				"churchill",
+				4,
+				"macEwan",
+				5,
+				"kingsway",
+				4,
+				"nait"
+			]
+		},
+		"valley": {
+			"vehicleType": {
+				"mode": "train",
+				"bidirectional": true,
+				"prefix": "",
+				"checkpoints": {}
+			},
+			"stops": [
+				"102st102ave",
+				3,
+				"churchill",
+				3,
+				"quarters",
+				4,
+				"muttart",
+				4,
+				"strathearn",
+				3,
+				"holyrood",
+				4,
+				"bonnieDoon",
+				4,
+				"avonmore",
+				4,
+				"davies",
+				6,
+				"millbourne",
+				4,
+				"greyNuns",
+				3,
+				"millWoods"
+			]
+		}
+	},
+	"locations": {
+		"centuryPark": {
+			"name": "Century Park Station",
+			"paths": []
+		},
+		"southgate": {
+			"name": "Southgate Station",
+			"paths": []
+		},
+		"southCampus": {
+			"name": "South Campus/Fort Edmonton Station",
+			"paths": []
+		},
+		"mcKernan": {
+			"name": "McKernan/Belgravia Station",
+			"paths": []
+		},
+		"healthSciences": {
+			"name": "Health Science/Jubilee Station",
+			"paths": []
+		},
+		"university": {
+			"name": "University Station",
+			"paths": []
+		},
+		"govermentCentre": {
+			"name": "Goverment Station",
+			"paths": []
+		},
+		"corona": {
+			"name": "Corona Station",
+			"paths": ["bayEnterprise"]
+		},
+		"bayEnterprise": {
+			"name": "Bay/Enterprise Square Station",
+			"paths": ["corona", "central", "102st102ave"]
+		},
+		"central": {
+			"name": "Central Station",
+			"paths": ["bayEnterprise", "churchill", "102st102ave"]
+		},
+		"churchill": {
+			"name": "Churchill Station",
+			"paths": ["central", "102st102ave", "quarters"]
+		},
+		"stadium": {
+			"name": "Stadium Station",
+			"paths": []
+		},
+		"coliseum": {
+			"name": "Coliseum Station",
+			"paths": []
+		},
+		"belvedere": {
+			"name": "Belbedere Station",
+			"paths": []
+		},
+		"clareview": {
+			"name": "Clareview Station",
+			"paths": []
+		},
+		"macEwan": {
+			"name": "MacEwan Station",
+			"paths": []
+		},
+		"kingsway": {
+			"name": "Kingsway/Royal Alex Station",
+			"paths": []
+		},
+		"nait": {
+			"name": "NAIT/Blanchford Market Station",
+			"paths": []
+		},
+		"102st102ave": {
+			"name": "102 Street Station",
+			"paths": ["churchill", "bayEnterprise", "central"]
+		},
+		"quarters": {
+			"name": "Quarters Station",
+			"paths": ["churchill"]
+		},
+		"muttart": {
+			"name": "Muttart Station",
+			"paths": []
+		},
+		"strathearn": {
+			"name": "Strathearn Station",
+			"paths": []
+		},
+		"holyrood": {
+			"name": "Holyrood Station",
+			"paths": []
+		},
+		"bonnieDoon": {
+			"name": "Bonnie Doon Station",
+			"paths": []
+		},
+		"avonmore": {
+			"name": "Avonmore Station",
+			"paths": []
+		},
+		"davies": {
+			"name": "Davies Station",
+			"paths": []
+		},
+		"millbourne": {
+			"name": "Millbourne/Woodvale Station",
+			"paths": []
+		},
+		"greyNuns": {
+			"name": "Grey Nuns Station",
+			"paths": []
+		},
+		"millWoods": {
+			"name": "Mill Woods Station",
+			"paths": []
+		}
+	}
+}
