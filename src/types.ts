@@ -12,7 +12,7 @@ export type VerbHook = (word: string, args: GameObject[]) => void;
 
 export interface Frontend {
 	appendStory(text: string, objects: GameObject[]): void;
-	invalidateObjects(): void;
+	invalidateObjects(objects?: GameObject[]): void;
 
 	registerVerb(word: string, args: VerbTag[]): void;
 	enableVerb(word: string): void;

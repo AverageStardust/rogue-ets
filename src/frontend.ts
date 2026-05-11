@@ -204,7 +204,7 @@ interface VerbSelection {
 
 export class HTMLFrontend implements Frontend {
 	private storyScreen: HTMLDivElement | null;
-	private activeNouns: Noun[] = [];
+	private activeNouns: Map<GameObject, Noun> = new Map();
 
 	private verbScreen: HTMLDivElement | null;
 	private verbs: Verb[] = [];
@@ -262,18 +262,23 @@ export class HTMLFrontend implements Frontend {
 	private finishOrUpdateSelection() {
 		if (this.verbSelection !== null) {
 			if (
-				this.verbSelection.currentArgs.length < this.verbSelection.args.length
+				this.verbSelection.currentArgs.length <
+				this.verbSelection.args.length
 			) {
 				// Update
-				for (const noun of this.activeNouns) {
-					noun.setSelectable(this.verbSelection.args[this.verbSelection.idx]);
+				for (const noun of this.activeNouns.values()) {
+					noun.setSelectable(
+						this.verbSelection.args[this.verbSelection.idx],
+					);
 				}
 			} else {
 				// Finish
 				if (this.verbHook !== null) {
 					this.verbHook(
 						this.verbSelection.word,
-						this.verbSelection.currentArgs.map((noun) => noun.getGameObject()),
+						this.verbSelection.currentArgs.map((noun) =>
+							noun.getGameObject(),
+						),
 					);
 				}
 				this.clearSelection();
@@ -287,7 +292,7 @@ export class HTMLFrontend implements Frontend {
 			verb.deselect();
 			verb.softEnable();
 		});
-		for (const noun of this.activeNouns) {
+		for (const noun of this.activeNouns.values()) {
 			noun.stopSelection();
 		}
 	}
@@ -309,15 +314,25 @@ export class HTMLFrontend implements Frontend {
 		);
 	}
 
+	private addActiveNoun(noun: Noun) {
+		const oldNoun = this.activeNouns.get(noun.getGameObject());
+
+		if (oldNoun != undefined) oldNoun.disable();
+
+		this.activeNouns.set(noun.getGameObject(), noun);
+	}
+
 	public appendStory(text: string, objects: GameObject[]): void {
 		const splitText = text.split("%o");
 		const paragraph = document.createElement("p");
 		paragraph.append(splitText.shift() ?? "");
+
 		let missingObject = 0;
 		const zipped = splitText.map((textSeg) => ({
 			textSeg,
 			object: objects.shift() ?? (missingObject++, "%o"),
 		}));
+
 		if (missingObject > 0) {
 			this.displayError(
 				`Appended story segment with ${missingObject} missing objects for interpolation`,
@@ -338,17 +353,21 @@ export class HTMLFrontend implements Frontend {
 			} else {
 				const noun = new Noun(object, this.nounClickedHook.bind(this));
 				noun.appendTo(paragraph);
-				this.activeNouns.push(noun);
+				this.addActiveNoun(noun);
 				paragraph.append(textSeg);
 			}
 		}
 	}
 
-	public invalidateObjects(): void {
-		for (const noun of this.activeNouns) {
-			noun.disable();
+	public invalidateObjects(objects?: GameObject[]): void {
+		if (objects == null) {
+			objects = Array.from(this.activeNouns.keys());
 		}
-		this.activeNouns = [];
+
+		for (const object of objects) {
+			this.activeNouns.get(object)?.disable();
+			this.activeNouns.delete(object);
+		}
 	}
 
 	public registerVerb(word: string, args: VerbTag[]) {
@@ -356,7 +375,11 @@ export class HTMLFrontend implements Frontend {
 		if (verb !== undefined) {
 			verb.args = args;
 		} else {
-			const newVerb = new Verb(word, args, this.verbClickedHook.bind(this));
+			const newVerb = new Verb(
+				word,
+				args,
+				this.verbClickedHook.bind(this),
+			);
 			this.verbs.push(newVerb);
 			if (this.verbScreen !== null) {
 				newVerb.appendTo(this.verbScreen);
@@ -419,10 +442,12 @@ export class HTMLFrontend implements Frontend {
 		}
 		if (this.notificationBox !== null) {
 			while (this.notificationBox.lastChild) {
-				this.notificationBox.removeChild(this.notificationBox.lastChild);
+				this.notificationBox.removeChild(
+					this.notificationBox.lastChild,
+				);
 			}
 		}
-		this.activeNouns = [];
+		this.activeNouns.clear();
 		this.verbs = [];
 		this.verbSelection = null;
 		this.notifications = [];
