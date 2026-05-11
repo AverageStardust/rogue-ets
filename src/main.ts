@@ -2,7 +2,8 @@ import { loadGamedata } from "./load";
 import "./style.css";
 
 async function init() {
-	await loadGamedata();
+	const json = await (await fetch("gamedata.json")).json();
+	loadGamedata(json);
 }
 
 init();

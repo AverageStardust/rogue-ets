@@ -1,5 +1,6 @@
 import { Line } from "../line";
 import { LoadError } from "../load";
+import { Trip } from "../trip";
 
 test("load lines", () => {
 	const line1 = Line.load({
@@ -26,7 +27,7 @@ test("load lines", () => {
 		"southCampus",
 		"mcKernan",
 	]);
-	expect(line1.trips).toEqual([10, 6, 4]);
+	expect(line1.trips).toEqual([new Trip(10), new Trip(6), new Trip(4)]);
 
 	const line2 = Line.load({
 		vehicleType: {
@@ -39,7 +40,7 @@ test("load lines", () => {
 	});
 
 	expect(line2.stops).toEqual(["university", "110st82ave", "104st82ave"]);
-	expect(line2.trips).toEqual([6, 7]);
+	expect(line2.trips).toEqual([new Trip(6), new Trip(7)]);
 });
 
 test("validate lines", () => {
@@ -51,7 +52,14 @@ test("validate lines", () => {
 				prefix: "",
 				checkpoints: {},
 			},
-			stops: ["centuryPark", 10, "southgate", 6, "southCampus", 4],
+			stops: [
+				"centuryPark",
+				[10, "harryAinlaySchool"],
+				"southgate",
+				6,
+				"southCampus",
+				4,
+			],
 		});
 	}).toThrow(LoadError);
 
@@ -63,7 +71,15 @@ test("validate lines", () => {
 				prefix: "",
 				checkpoints: {},
 			},
-			stops: [7, "centuryPark", 10, "southgate", 6, "southCampus"],
+			stops: [
+				7,
+				"centuryPark",
+				[10, "harryAinlaySchool"],
+				,
+				"southgate",
+				6,
+				"southCampus",
+			],
 		});
 	}).toThrow(LoadError);
 

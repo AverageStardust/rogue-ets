@@ -1,9 +1,7 @@
 import { loadLines, validateLines } from "./line";
 import { loadLocations, validateLocations } from "./location";
 
-export async function loadGamedata() {
-	const json = await (await fetch("gamedata.json")).json();
-
+export function loadGamedata(json: any) {
 	loadLines(json["lines"]);
 	loadLocations(json["locations"]);
 
