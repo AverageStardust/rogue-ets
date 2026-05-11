@@ -1,3 +1,128 @@
 :root {
-	background-color: red;
+	background-color: black;
+}
+
+html,
+body {
+	height: 100%;
+	margin: 0;
+	max-height: 100%;
+	overflow: hidden;
+	font-family: monospace;
+	color: white;
+}
+
+body {
+	display: flex;
+}
+
+.app {
+	flex: 1;
+
+	padding: 16px;
+
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.app .box {
+	padding: 8px;
+	border: solid white 3px;
+}
+
+.app .title h1 {
+	font-size: 24px;
+	margin: 0;
+	-webkit-user-select: none; /* Safari */
+	-ms-user-select: none; /* IE 10 and IE 11 */
+	user-select: none; /* Standard syntax */
+}
+
+.app .story-screen {
+	flex: 1;
+	overflow-y: scroll;
+
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.app .story-screen p {
+	font-size: 16px;
+	margin: 0;
+}
+
+.app .verb-screen {
+	display: grid;
+
+	grid-template-columns: repeat(auto-fit, 100px);
+
+	gap: 8px;
+
+	-webkit-user-select: none; /* Safari */
+	-ms-user-select: none; /* IE 10 and IE 11 */
+	user-select: none; /* Standard syntax */
+}
+
+.app .verb-screen .btn {
+	font-size: 20px;
+	justify-self: center;
+}
+
+.app .btn {
+	text-decoration: underline;
+	text-wrap: nowrap;
+	padding: 4px;
+}
+
+.app .btn[selectableState="selectable"] {
+	font-weight: bold;
+	color: #6ca3fc;
+	cursor: pointer;
+}
+
+.app .btn[selectableState="selected"] {
+	font-weight: bold;
+	color: #fcf56c;
+	cursor: pointer;
+}
+
+.app .btn[selectableState="disabled"] {
+	text-decoration: none;
+	color: #bbbbbb;
+}
+
+@media (max-width: 800px) {
+	.app {
+		padding: 8px;
+
+		gap: 8px;
+	}
+
+	.app .box {
+		padding: 6px;
+		border: solid white 2px;
+	}
+
+	.app .title h1 {
+		font-size: 16px;
+	}
+
+	.app .story-screen {
+		line-height: 20px;
+
+		gap: 8px;
+	}
+
+	.app .story-screen p {
+		font-size: 12px;
+	}
+
+	.app .verb-screen {
+		gap: 4px;
+	}
+	.app .verb-screen .btn {
+		font-size: 16px;
+	}
 }
